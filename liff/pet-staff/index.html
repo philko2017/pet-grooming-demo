@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.line-scdn.net https://liffsdk.line-scdn.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://api.line.me https://*.line.me https://*.line-scdn.net https://uts-front.line-apps.com https://cdn.jsdelivr.net; object-src 'none'; base-uri 'none'">
+  <title>店家後台｜溫莎城堡寵物沙龍</title>
+  <link rel="stylesheet" href="../../shared/common.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="header-top">
+        <span class="brand-tag">✂️ 店家工作台（內部專用）</span>
+        <span class="mock-badge hidden" id="mockBadge">預覽模式</span>
+      </div>
+      <h1 class="header-title">溫莎城堡｜店家管理</h1>
+      <p class="header-sub">今日客人・顧客搜尋・待確認綁定</p>
+    </header>
+
+    <main class="page-body" id="staffMain"></main>
+
+    <nav class="bottom-nav hidden" id="staffBottomNav">
+      <div class="bottom-nav-inner">
+        <button type="button" class="nav-tab active" data-tab="today">
+          <span class="nav-icon">📅</span>
+          <span>今日客人</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="search">
+          <span class="nav-icon">🔍</span>
+          <span>搜尋</span>
+        </button>
+        <button type="button" class="nav-tab" data-tab="pending">
+          <span class="nav-icon">⚠️</span>
+          <span>待確認</span>
+          <span class="nav-badge hidden" id="navPendingBadge">0</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="../../shared/config.js"></script>
+  <script src="../../shared/api.js"></script>
+  <script src="../../shared/pdf-viewer.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

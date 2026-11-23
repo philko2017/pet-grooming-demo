@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.line-scdn.net https://liffsdk.line-scdn.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://api.line.me https://*.line.me https://*.line-scdn.net https://uts-front.line-apps.com https://cdn.jsdelivr.net; object-src 'none'; base-uri 'none'">
+  <title>我的紀錄｜溫莎城堡寵物沙龍</title>
+  <link rel="stylesheet" href="../../shared/common.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="header-top">
+        <span class="brand-tag">🐾 溫莎城堡寵物沙龍</span>
+        <span class="mock-badge hidden" id="mockBadge">預覽模式</span>
+      </div>
+      <h1 class="header-title">我的毛孩紀錄</h1>
+      <p class="header-sub" id="recordsSubtitle">正在開啟您的紀錄…</p>
+    </header>
+
+    <main class="page-body" id="recordsMain"></main>
+  </div>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="../../shared/config.js"></script>
+  <script src="../../shared/api.js"></script>
+  <script src="../../shared/pdf-viewer.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

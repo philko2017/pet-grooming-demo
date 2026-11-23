@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>聯絡店家｜溫莎城堡寵物沙龍</title>
+  <link rel="stylesheet" href="../shared/common.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="header-top">
+        <span class="brand-tag">🐾 Pets' Windsor Castle</span>
+      </div>
+      <h1 class="header-title">溫莎城堡寵物沙龍</h1>
+      <p class="header-sub">門市地址、營業時間與預約小提醒</p>
+    </header>
+
+    <main class="page-body">
+      <div class="card">
+        <h2 class="card-title">🏠 沙龍位置與聯絡方式</h2>
+        <div class="summary-row">
+          <span class="summary-k">地址</span>
+          <span class="summary-v" id="infoAddress">新北市中和區連城路347巷4弄6號2樓</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-k">位置提示</span>
+          <span class="summary-v">老公寓白色露台小屋（電鈴在二樓）</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-k">電話</span>
+          <span class="summary-v"><a href="tel:0222222830">02-2222-2830</a></span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-k">營業時間</span>
+          <span class="summary-v">週二～週日 10:00–19:00（週一公休）</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-k">美容團隊</span>
+          <span class="summary-v">沙沙（店長暨犬貓美容師）<br>史丹利（資深狗狗美容師）</span>
+        </div>
+        <div class="btn-row" style="margin-top: 12px;">
+          <a class="btn btn-secondary" href="https://maps.google.com/?q=新北市中和區連城路347巷4弄6號2樓" target="_blank" rel="noopener">📍 開啟地圖導航</a>
+          <a class="btn btn-secondary" href="tel:0222222830">📞 撥打電話</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">📋 預約與到店小提醒</h2>
+        <ul style="margin: 0; padding-left: 18px; font-size: 14px; color: var(--text);">
+          <li style="margin-bottom: 6px;">當天請提早 10 分鐘到店，讓毛孩先熟悉環境喔。</li>
+          <li style="margin-bottom: 6px;">如須改期或取消，請於預約時間 <strong>24 小時前</strong>在 LINE 告知（24 小時內異動依規範酌收空檔等候費）。</li>
+          <li style="margin-bottom: 6px;">遲到逾 10 分鐘店家得取消預約；美容完成通知接回後逾時 30 分鐘起另計照護逾時費。</li>
+          <li>第一次預約記得先填寫「顧客單」，若毛孩有心臟、氣管、皮膚或緊張咬人狀況，請務必事先告知我們。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">💬 線上服務捷徑</h2>
+        <div class="btn-row" style="flex-direction: column;">
+          <a class="btn btn-primary" id="btnChatLine" href="#">💬 直接傳 LINE 訊息給我們</a>
+          <a class="btn btn-outline" id="btnToSlots" href="../liff/pet-slots/">📅 查看最新可預約時段</a>
+          <a class="btn btn-outline" id="btnToForm" href="https://liff.line.me/2012766085-snrHWolN">📝 填寫毛孩顧客單</a>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 18px; font-size: 12.5px; color: var(--muted);">
+        <a id="staffEntryLink" href="https://liff.line.me/2012766085-eJj990Rh" style="color: var(--muted); text-decoration: underline;">
+          店家／美容師手機後台入口
+        </a>
+      </p>
+    </main>
+  </div>
+
+  <script src="../shared/config.js"></script>
+  <script src="../shared/api.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>17寵物美容測試站｜溫莎城堡寵物沙龍</title>
+  <link rel="stylesheet" href="./shared/common.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="header-top">
+        <span class="brand-tag">🐾 第一階段展示測試環境</span>
+        <span class="mock-badge">17寵物美容 @976fowuq</span>
+      </div>
+      <h1 class="header-title">溫莎城堡寵物沙龍｜功能入口</h1>
+      <p class="header-sub">手機 LINE 圖文選單與店家後台連結總覽</p>
+    </header>
+
+    <main class="page-body">
+      <div class="card">
+        <h2 class="card-title">🐶 客人使用入口（圖文選單）</h2>
+        <div class="btn-row" style="flex-direction: column;">
+          <a class="btn btn-primary" href="./liff/pet-slots/">📅 1. 查空檔（時段查詢頁）</a>
+          <a class="btn btn-outline" href="https://liff.line.me/2012766085-snrHWolN">📝 2. 填顧客單（LINE LIFF）</a>
+          <a class="btn btn-outline" href="https://liff.line.me/2012766085-NLzSCnBq">📁 3. 我的紀錄（LINE LIFF）</a>
+          <a class="btn btn-outline" href="./info/">🏠 4. 聯絡店家</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">🔑 店家手機後台</h2>
+        <div class="btn-row" style="flex-direction: column;">
+          <a class="btn btn-green" href="https://liff.line.me/2012766085-eJj990Rh">✂️ 開啟店家手機後台（LINE LIFF）</a>
+        </div>
+        <p class="field-hint" style="margin-top: 8px;">僅限試算表「店家名單」已啟用的帳號開啟；一般客人打開會看到「僅限店家人員使用」。</p>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">👀 電腦純介面預覽（測試假資料）</h2>
+        <div class="btn-row" style="flex-direction: column;">
+          <a class="btn btn-secondary btn-sm" href="./liff/pet-slots/?mock=1">預覽：查空檔</a>
+          <a class="btn btn-secondary btn-sm" href="./liff/pet-form/?mock=1&date=2026-12-01&time=14%3A00">預覽：填顧客單（帶日期時段）</a>
+          <a class="btn btn-secondary btn-sm" href="./liff/pet-records/?mock=1">預覽：我的紀錄（含單據 PDF）</a>
+          <a class="btn btn-secondary btn-sm" href="./liff/pet-staff/?mock=1&role=staff">預覽：店家後台</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
