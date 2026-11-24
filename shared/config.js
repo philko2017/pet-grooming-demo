@@ -8,7 +8,7 @@ window.PWC_CONFIG = {
   LINE_OA_ID: "@976fowuq",
 
   // Google Apps Script Web App 網址（步驟 4 部署後填入）
-  API_URL: "",
+  API_URL: "https://script.google.com/macros/s/AKfycbw7Tnlwr_ryLIY8fL8j0jtDLgAoHy2uJ20PUWQCtqx1eA9YhBUM7z3fH4ZuUehp-lQ/exec",
 
   LIFF_IDS: {
     FORM: "2012766085-snrHWolN",
