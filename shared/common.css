@@ -773,3 +773,12 @@ details.clean-details summary {
 .hidden {
   display: none !important;
 }
+
+/* 查空檔：可約格子改成按鈕（可選取後預約） */
+button.slot-card {
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}

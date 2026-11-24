@@ -88,6 +88,123 @@
     return res;
   }
 
+  // ---------- 新預約／待確認收款 ----------
+  const bookingBadge = document.getElementById("navBookingBadge");
+
+  function updateBookingBadge(list) {
+    if (!bookingBadge) return;
+    const n = (list || []).filter(function (b) { return b.status === "待確認收款" || b.status === "待店家確認"; }).length;
+    bookingBadge.textContent = String(n);
+    bookingBadge.classList.toggle("hidden", n === 0);
+  }
+
+  async function refreshBookingCount() {
+    const res = await api.apiPost("staff_booking_list", {}, authCtx);
+    if (res && res.ok) updateBookingBadge(res.bookings);
+  }
+
+  async function loadBookings() {
+    subView = null;
+    setNavActive("bookings");
+    renderLoading();
+    const res = await api.apiPost("staff_booking_list", {}, authCtx);
+    if (!res || !res.ok) {
+      if (res && res.error === "not_admin") return renderNotAdmin(res.message);
+      mainEl.innerHTML = '<div class="card"><p class="muted">' + api.escapeHtml(api.errorText(res && res.error, res && res.message)) + "</p></div>";
+      return;
+    }
+    updateBookingBadge(res.bookings);
+    renderBookings(res);
+  }
+
+  function renderBookings(data) {
+    const list = data.bookings || [];
+    const groups = [
+      { status: "待確認收款", title: "💰 待確認收款", hint: "客人已回報匯款，請對帳後按「確認收款」" },
+      { status: "待店家確認", title: "✅ 待店家確認", hint: "" },
+      { status: "待付訂金", title: "⏳ 等客人付訂金", hint: "逾期未付會在每小時檢查時自動取消並釋出時段" }
+    ];
+    const html = [];
+    html.push(
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin:2px 2px 10px;">' +
+      '  <strong style="font-size:17px;">新預約／待確認收款</strong>' +
+      '  <button type="button" class="btn btn-outline btn-sm" id="btnBookingsRefresh">重新整理</button>' +
+      "</div>"
+    );
+    if (!list.length) {
+      html.push('<div class="card" style="text-align:center;"><div class="state-emoji">🎉</div><p class="muted" style="margin:0;">目前沒有待處理的線上預約</p></div>');
+    }
+    groups.forEach(function (g) {
+      const items = list.filter(function (b) { return b.status === g.status; });
+      if (!items.length) return;
+      html.push('<h2 class="card-title" style="margin:12px 2px 6px;">' + g.title + '（' + items.length + "）</h2>");
+      if (g.hint) html.push('<p class="field-hint" style="margin:0 2px 8px;">' + api.escapeHtml(g.hint) + "</p>");
+      items.forEach(function (b) {
+        const id = api.escapeHtml(b.recordId);
+        const st = api.escapeHtml(b.status);
+        html.push('<div class="card">');
+        html.push(
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+          '  <strong style="font-size:16px;">📅 ' + api.escapeHtml((b.date || "").replace(/-/g, "/")) + " " + api.escapeHtml(b.time) + "</strong>" +
+          (b.overdue ? '<span class="pill pill-red">已逾期</span>' : '<span class="pill">' + id + "</span>") +
+          "</div>"
+        );
+        html.push('<div><strong>' + api.escapeHtml(b.petName || "") + "</strong>・" + api.escapeHtml(b.service || "") + "</div>");
+        html.push(
+          '<div class="muted" style="margin:4px 0;">' + api.escapeHtml(b.ownerName || "") + "　" +
+          (b.phone ? '<a href="tel:' + api.escapeHtml(b.phone) + '">' + api.escapeHtml(b.phone) + "</a>" : "") + "</div>"
+        );
+        if (b.deposit > 0) {
+          html.push('<div class="muted">訂金 NT$ ' + api.escapeHtml(String(b.deposit)) + (b.deadline ? "｜期限 " + api.escapeHtml(b.deadline) : "") + "</div>");
+        }
+        if (b.last5) {
+          html.push('<div style="margin-top:4px;"><span class="pill pill-amber">末五碼 ' + api.escapeHtml(b.last5) + "</span> " + api.escapeHtml(b.transferDate || "") + "</div>");
+        }
+        if (b.customerNote) {
+          html.push('<div class="notice-banner" style="margin-top:8px;">客人備註：' + api.escapeHtml(b.customerNote) + "</div>");
+        }
+        html.push('<div class="btn-row" style="margin-top:10px;flex-wrap:wrap;">');
+        if (b.status === "待確認收款" || b.status === "待付訂金") {
+          html.push('<button type="button" class="btn btn-green btn-sm" data-bk-act="staff_confirm_payment" data-bk-id="' + id + '" data-bk-st="' + st + '">確認收款</button>');
+          html.push('<button type="button" class="btn btn-outline btn-sm" data-bk-act="staff_extend_booking" data-bk-id="' + id + '" data-bk-st="' + st + '">延長期限</button>');
+        }
+        if (b.status === "待店家確認") {
+          html.push('<button type="button" class="btn btn-green btn-sm" data-bk-act="staff_confirm_booking" data-bk-id="' + id + '" data-bk-st="' + st + '">確認預約</button>');
+        }
+        html.push('<button type="button" class="btn btn-danger btn-sm" data-bk-act="staff_cancel_booking" data-bk-id="' + id + '" data-bk-st="' + st + '">取消預約</button>');
+        html.push("</div></div>");
+      });
+    });
+    mainEl.innerHTML = html.join("");
+
+    document.getElementById("btnBookingsRefresh").addEventListener("click", loadBookings);
+    mainEl.querySelectorAll("[data-bk-act]").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        const act = btn.getAttribute("data-bk-act");
+        const params = { recordId: btn.getAttribute("data-bk-id"), expectedStatus: btn.getAttribute("data-bk-st") };
+        if (act === "staff_cancel_booking") {
+          const reason = window.prompt("確定要取消這筆預約嗎？時段會馬上釋出。\n可以寫一下原因（選填）：", "");
+          if (reason === null) return;
+          params.reason = reason;
+        }
+        if (act === "staff_confirm_payment" && params.expectedStatus === "待付訂金" &&
+            !window.confirm("客人還沒回報匯款，確定已經收到訂金了嗎？")) {
+          return;
+        }
+        btn.disabled = true;
+        const res = await api.apiPost(act, params, authCtx);
+        if (!res || !res.ok) {
+          btn.disabled = false;
+          api.showToast(api.errorText(res && res.error, res && res.message));
+          if (res && res.error === "stale") loadBookings();
+          return;
+        }
+        api.showToast(act === "staff_extend_booking" ? "付款期限已延長到 " + (res.deadline || "") : "已更新為「" + res.status + "」");
+        loadBookings();
+      });
+    });
+  }
+
   // ---------- 今日客人 ----------
   async function loadToday() {
     subView = null;
@@ -432,6 +549,7 @@
     document.getElementById("btnCustBack").addEventListener("click", function () {
       if (activeTab === "search") loadSearch();
       else if (activeTab === "pending") loadPending();
+      else if (activeTab === "bookings") loadBookings();
       else loadToday();
     });
     mainEl.querySelectorAll("[data-add-cust-note]").forEach(function (b) {
@@ -838,6 +956,7 @@
           if (t === "today") loadToday();
           else if (t === "search") loadSearch();
           else if (t === "pending") loadPending();
+          else if (t === "bookings") loadBookings();
         });
       });
     }
@@ -854,6 +973,7 @@
     }
     setNavActive("today");
     refreshPendingCount();
+    refreshBookingCount();
   }
 
   initPage();

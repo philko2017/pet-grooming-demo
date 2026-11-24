@@ -69,6 +69,14 @@
     }
 
     const html = [];
+    const bookings = data.bookings || [];
+    if (bookings.length) {
+      html.push('<h2 class="card-title" style="margin:4px 2px 8px;">🗓️ 我的預約</h2>');
+      bookings.forEach(function (b, idx) {
+        html.push('<div data-booking-idx="' + idx + '"></div>');
+      });
+      html.push('<h2 class="card-title" style="margin:14px 2px 8px;">🐾 毛孩紀錄</h2>');
+    }
     pets.forEach(function (pet) {
       const emoji = pet.species === "貓" ? "🐱" : "🐶";
       const lastStr = pet.lastVisitDate
@@ -90,6 +98,10 @@
     });
 
     mainEl.innerHTML = html.join("");
+    mainEl.querySelectorAll("[data-booking-idx]").forEach(function (box) {
+      const b = bookings[Number(box.getAttribute("data-booking-idx"))];
+      window.PwcBookingPay.render(box, { booking: b, payment: data.payment || {}, authCtx: authCtx });
+    });
     mainEl.querySelectorAll("[data-open-pet]").forEach(function (card) {
       card.addEventListener("click", function () {
         loadPetTimeline(card.getAttribute("data-open-pet"));

@@ -38,6 +38,7 @@
     fromUrlDate: "",
     fromUrlTime: "",
     fromUrlPet: "",
+    fromSlots: false,
     termsAccepted: false,
     requestId: "",
     lastResult: null,
@@ -790,6 +791,18 @@
     }
 
     state.lastResult = res;
+
+    if (state.fromSlots && res.recordId && !res.pendingBind) {
+      const slotsBase = (cfg.PAGES && cfg.PAGES.SLOTS) || "../pet-slots/";
+      const backUrl = slotsBase + (slotsBase.indexOf("?") === -1 ? "?" : "&") +
+        "record=" + encodeURIComponent(res.recordId) +
+        "&date=" + encodeURIComponent(state.booking.date) +
+        "&time=" + encodeURIComponent(state.booking.time);
+      mainEl.innerHTML = '<div class="card" style="text-align:center;padding:24px 16px;"><div class="state-emoji">🐾</div><p>顧客單已送出，正在帶您回去確認預約…</p></div>';
+      window.location.replace(backUrl);
+      return;
+    }
+
     state.step = "success";
     renderStep();
   }
@@ -873,6 +886,8 @@
       state.booking.time = qTime;
     }
     if (qPet) state.fromUrlPet = qPet;
+    // 從查空檔頁導來的新客人：填完自動回到查空檔頁確認預約
+    state.fromSlots = api.getParam("from") === "slots" && Boolean(state.fromUrlDate && state.fromUrlTime);
 
     state.requestId = newRequestId();
     const prof = await api.apiPost("load_profile", {}, authCtx);

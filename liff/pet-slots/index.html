@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'none'">
-  <title>查空檔｜溫莎城堡寵物沙龍</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.line-scdn.net https://liffsdk.line-scdn.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://api.line.me https://*.line.me https://*.line-scdn.net https://uts-front.line-apps.com; object-src 'none'; base-uri 'none'">
+  <title>查空檔與預約｜溫莎城堡寵物沙龍</title>
   <link rel="stylesheet" href="../../shared/common.css">
 </head>
 <body>
@@ -17,8 +17,8 @@
       </div>
       <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">
         <div>
-          <h1 class="header-title">查詢可預約時段</h1>
-          <p class="header-sub">點選「可約」直接開啟 LINE 詢問預約</p>
+          <h1 class="header-title" id="headerTitle">查詢可預約時段</h1>
+          <p class="header-sub" id="headerSub">點選「可約」時段，就能直接線上預約</p>
         </div>
         <button type="button" class="btn btn-outline btn-sm" id="btnRefresh" style="background:rgba(255,255,255,0.18);color:#FFF;border-color:rgba(255,255,255,0.38);">重新整理</button>
       </div>
@@ -27,14 +27,14 @@
     <main class="page-body" id="slotsMain"></main>
 
     <div class="sticky-footer">
-      <div class="sticky-footer-inner">
-        <a class="btn btn-primary btn-block" id="btnFooterAsk" href="#">💬 用 LINE 詢問預約</a>
-      </div>
+      <div class="sticky-footer-inner" id="footerInner"></div>
     </div>
   </div>
 
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="../../shared/config.js"></script>
   <script src="../../shared/api.js"></script>
+  <script src="../../shared/booking-pay.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

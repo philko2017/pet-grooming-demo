@@ -86,6 +86,7 @@
       auth: "登入已逾時，請關閉頁面再從選單打開",
       not_admin: "此頁面僅限店家人員使用",
       not_bound: "還沒有您的資料，請先填一次顧客單",
+      slot_taken: "這個時段剛剛被預約走了，請選擇其他時段",
       forbidden: "找不到這筆資料，或您沒有權限查看喔",
       not_ready: "單據還在準備中，請稍後再看或聯絡店家",
       stale: "資料已更新，請重新載入",
@@ -222,7 +223,7 @@
       ok: true,
       shopName: cfg.SHOP_NAME || "溫莎城堡寵物沙龍",
       lineOaId: cfg.LINE_OA_ID || "@976fowuq",
-      notice: "大型犬美容約需 3 小時，建議挑選連續空格；點選「可約」時段可直接開啟 LINE 詢問預約喔！",
+      notice: "大型犬美容約需 3 小時，建議挑選連續空格；點選「可約」時段就能直接線上預約喔！",
       updatedAt: "23:55",
       calendarConfigured: true,
       stepMin: 60,
@@ -262,7 +263,13 @@
               lastVisitDate: st.profile.today,
               visitCount: st.profile.records.length
             };
-          })
+          }),
+          bookings: (st.mockBookings && st.mockBookings.length) ? st.mockBookings : [{
+            recordId: "G-0098", date: todayIsoTaipei(3), time: "10:00", petId: "P-0001", petName: "奶茶",
+            service: "基礎洗澡", status: "待付訂金", deposit: 300, deadline: todayIsoTaipei(1) + " 20:00",
+            overdue: false, last5: "", transferDate: "", canReport: true
+          }],
+          payment: { deposit: 300, bankAccount: "822 中國信託 123-456-789012（戶名：測試）", deadlineHours: 24 }
         });
       }
       return Promise.resolve({
@@ -406,10 +413,71 @@
       st.profile.pending = [];
       return Promise.resolve({ ok: true, pendingId: params.pendingId, status: "已處理" });
     }
+    // 線上預約（預覽模式）
+    if (action === "book_slot") {
+      st.mockBookings = st.mockBookings || [];
+      const bk = {
+        recordId: params.recordId || "G-00" + (90 + st.mockBookings.length),
+        date: params.date || todayIsoTaipei(2),
+        time: params.time || "14:30",
+        petId: params.petId || "P-0001",
+        petName: (st.profile.pets.find(function (p) { return p.petId === params.petId; }) || st.profile.pets[0] || {}).name || "毛孩",
+        service: params.service || "基礎洗澡",
+        status: "待付訂金",
+        deposit: 300,
+        deadline: todayIsoTaipei(1) + " 20:00",
+        overdue: false,
+        last5: "",
+        transferDate: "",
+        canReport: true
+      };
+      st.mockBookings.push(bk);
+      return Promise.resolve({ ok: true, booking: bk, payment: { deposit: 300, bankAccount: "822 中國信託 123-456-789012（戶名：測試）", deadlineHours: 24 }, alreadyBooked: false });
+    }
+    if (action === "report_payment") {
+      (st.mockBookings || []).forEach(function (b) {
+        if (b.recordId === params.recordId) { b.status = "待確認收款"; b.last5 = params.last5; b.transferDate = params.transferDate; }
+      });
+      return Promise.resolve({ ok: true, recordId: params.recordId, status: "待確認收款" });
+    }
+    if (action === "staff_booking_list") {
+      const list = (st.mockBookings || []).filter(function (b) { return b.status !== "已確認" && b.status !== "已取消"; });
+      return Promise.resolve({
+        ok: true,
+        needShopConfirm: false,
+        counts: {},
+        bookings: list.length ? list.map(function (b) { return Object.assign({ ownerName: "陳小美", phone: "0912345678", customerNote: "" }, b); }) : [{
+          recordId: "G-0099", date: todayIsoTaipei(2), time: "14:30", petName: "奶茶", service: "基礎洗澡",
+          status: "待確認收款", deposit: 300, deadline: todayIsoTaipei(1) + " 20:00", overdue: false,
+          last5: "12345", transferDate: todayIsoTaipei(0), canReport: true, ownerName: "陳小美", phone: "0912345678", customerNote: "怕吹風機"
+        }]
+      });
+    }
+    if (action === "staff_confirm_payment" || action === "staff_confirm_booking") {
+      return Promise.resolve({ ok: true, recordId: params.recordId, status: "已確認" });
+    }
+    if (action === "staff_cancel_booking") {
+      return Promise.resolve({ ok: true, recordId: params.recordId, status: "已取消" });
+    }
+    if (action === "staff_extend_booking") {
+      return Promise.resolve({ ok: true, recordId: params.recordId, status: "待付訂金", deadline: todayIsoTaipei(2) + " 20:00" });
+    }
     if (action === "staff_link_event") {
       return Promise.resolve({ ok: true, eventId: params.eventId, phone: params.phone, customerName: "陳小美" });
     }
     return Promise.resolve({ ok: false, error: "unknown_action", message: "不支援的動作" });
+  }
+
+  // 同一頁只呼叫一次 liff.init（查空檔頁會先初始化看參數，按預約才要求登入）
+  const liffInitPromises = {};
+  function liffInitOnce(liffId) {
+    if (!window.liff) {
+      return Promise.reject(new Error("no liff sdk"));
+    }
+    if (!liffInitPromises[liffId]) {
+      liffInitPromises[liffId] = window.liff.init({ liffId: liffId });
+    }
+    return liffInitPromises[liffId];
   }
 
   async function initLiffAuth(liffId) {
@@ -429,7 +497,7 @@
 
     const tryKey = "pwc_login_try_" + liffId;
     try {
-      await window.liff.init({ liffId: liffId });
+      await liffInitOnce(liffId);
     } catch (err) {
       return {
         ok: false,
@@ -545,6 +613,7 @@
     formatMmDdWeekday: formatMmDdWeekday,
     errorText: errorText,
     initLiffAuth: initLiffAuth,
+    liffInitOnce: liffInitOnce,
     apiGetSlots: apiGetSlots,
     apiPost: apiPost
   };
