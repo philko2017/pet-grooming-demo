@@ -13,15 +13,17 @@ window.PWC_CONFIG = {
   LIFF_IDS: {
     FORM: "2012766085-snrHWolN",
     RECORDS: "2012766085-NLzSCnBq",
-    STAFF: "2012766085-eJj990Rh"
+    STAFF: "2012766085-eJj990Rh",
+    SLOTS: "2012766085-TC2EpM5n",
+    INFO: "2012766085-muRR0RuW"
   },
 
   PAGES: {
-    SLOTS: "https://philko2017.github.io/pet-grooming-demo/liff/pet-slots/",
+    SLOTS: "https://liff.line.me/2012766085-TC2EpM5n",
     FORM_LIFF: "https://liff.line.me/2012766085-snrHWolN",
     RECORDS_LIFF: "https://liff.line.me/2012766085-NLzSCnBq",
     STAFF_LIFF: "https://liff.line.me/2012766085-eJj990Rh",
-    INFO: "https://philko2017.github.io/pet-grooming-demo/info/"
+    INFO: "https://liff.line.me/2012766085-muRR0RuW"
   },
 
   SHOP_INFO: {
