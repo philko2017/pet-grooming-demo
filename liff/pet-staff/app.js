@@ -941,6 +941,77 @@
     renderBodyFn(body, closeFn);
   }
 
+  // ---------- 模擬客人選單（不切換身分） ----------
+  function loadCustomerMenu() {
+    subView = null;
+    setNavActive("customer_menu");
+    const pages = cfg.PAGES || {};
+    const isMock = api.isMockMode();
+    const linkSlots = isMock ? "../pet-slots/?mock=1" : (pages.SLOTS || "../pet-slots/");
+    const linkForm = isMock ? "../pet-form/?mock=1" : (pages.FORM_LIFF || "../pet-form/");
+    const linkRecords = isMock ? "../pet-records/?mock=1" : (pages.RECORDS_LIFF || "../pet-records/");
+    const linkInfo = isMock ? "../../info/?mock=1" : (pages.INFO || "../../info/");
+
+    const html = [];
+    html.push(
+      '<div class="notice-banner">' +
+      '  <strong style="color:var(--primary-dark);">👀 模擬客人選單（不切換身分）</strong><br>' +
+      "  可直接從這裡點開客人端的 4 個功能畫面檢查排版或實測填單，<strong>不會改動或切換您的管理者權限</strong>。" +
+      "</div>"
+    );
+
+    html.push('<div class="card">');
+    html.push('<h2 class="card-title">📱 客人看到的 4 格圖文選單</h2>');
+    html.push('<div class="slots-grid" style="grid-template-columns:repeat(2,1fr);gap:10px;">');
+    html.push(
+      '<a class="btn btn-outline" style="flex-direction:column;min-height:84px;padding:12px;" href="' + api.escapeHtml(linkSlots) + '">' +
+      '  <span style="font-size:22px;">📅</span>' +
+      '  <span>查空檔</span>' +
+      '  <span class="muted" style="font-size:11.5px;">看可預約時段</span>' +
+      "</a>" +
+      '<a class="btn btn-primary" style="flex-direction:column;min-height:84px;padding:12px;" href="' + api.escapeHtml(linkForm) + '">' +
+      '  <span style="font-size:22px;">📝</span>' +
+      '  <span>填顧客單</span>' +
+      '  <span class="muted" style="font-size:11.5px;color:rgba(255,255,255,0.88);">新客／帶入舊資料</span>' +
+      "</a>" +
+      '<a class="btn btn-outline" style="flex-direction:column;min-height:84px;padding:12px;" href="' + api.escapeHtml(linkRecords) + '">' +
+      '  <span style="font-size:22px;">📖</span>' +
+      '  <span>我的紀錄</span>' +
+      '  <span class="muted" style="font-size:11.5px;">看顧客單與收據</span>' +
+      "</a>" +
+      '<a class="btn btn-outline" style="flex-direction:column;min-height:84px;padding:12px;" href="' + api.escapeHtml(linkInfo) + '">' +
+      '  <span style="font-size:22px;">📍</span>' +
+      '  <span>聯絡店家</span>' +
+      '  <span class="muted" style="font-size:11.5px;">地址・電話・須知</span>' +
+      "</a>"
+    );
+    html.push("</div>");
+    html.push("</div>");
+
+    html.push('<div class="card">');
+    html.push('<h2 class="card-title">🧪 測試「帶預約時間」開顧客單</h2>');
+    html.push(
+      '<p class="muted" style="margin:0 0 10px;">模擬發給客人的確認預約連結，預先帶入日期、時段與毛孩名字：</p>' +
+      '<div class="form-group"><label class="form-label" for="simDate">日期</label><input class="form-input" id="simDate" type="date" value="' + api.escapeHtml(todayDate) + '"></div>' +
+      '<div class="form-group"><label class="form-label" for="simTime">時段</label><input class="form-input" id="simTime" type="time" value="14:00"></div>' +
+      '<div class="form-group"><label class="form-label" for="simPet">寵物名（選填）</label><input class="form-input" id="simPet" placeholder="例如：奶茶"></div>' +
+      '<button type="button" class="btn btn-secondary btn-block" id="btnOpenSimForm">開啟預填顧客單測試</button>'
+    );
+    html.push("</div>");
+
+    mainEl.innerHTML = html.join("");
+    document.getElementById("btnOpenSimForm").addEventListener("click", function () {
+      const d = document.getElementById("simDate").value || todayDate;
+      const t = document.getElementById("simTime").value || "14:00";
+      const p = document.getElementById("simPet").value.trim();
+      const base = linkForm;
+      const sep = base.indexOf("?") !== -1 ? "&" : "?";
+      let url = base + sep + "date=" + encodeURIComponent(d) + "&time=" + encodeURIComponent(t);
+      if (p) url += "&pet=" + encodeURIComponent(p);
+      window.location.href = url;
+    });
+  }
+
   async function initPage() {
     renderLoading();
     authCtx = await api.initLiffAuth((cfg.LIFF_IDS && cfg.LIFF_IDS.STAFF) || "");
@@ -957,6 +1028,7 @@
           else if (t === "search") loadSearch();
           else if (t === "pending") loadPending();
           else if (t === "bookings") loadBookings();
+          else if (t === "customer_menu") loadCustomerMenu();
         });
       });
     }
