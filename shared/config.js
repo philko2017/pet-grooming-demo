@@ -7,8 +7,8 @@ window.PWC_CONFIG = {
   SHOP_SUB: "Pets' Windsor Castle",
   LINE_OA_ID: "@976fowuq",
 
-  // Google Apps Script Web App 網址（步驟 4 部署後填入）
-  API_URL: "https://script.google.com/macros/s/AKfycbw7Tnlwr_ryLIY8fL8j0jtDLgAoHy2uJ20PUWQCtqx1eA9YhBUM7z3fH4ZuUehp-lQ/exec",
+  // n8n 共用後端 Webhook 網址（GET ?action=slots / POST action）
+  API_URL: "https://idly-junction-altitude.ngrok-free.dev/webhook/pet-grooming",
 
   LIFF_IDS: {
     FORM: "2012766085-snrHWolN",
